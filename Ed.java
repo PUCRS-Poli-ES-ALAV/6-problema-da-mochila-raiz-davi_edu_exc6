@@ -24,8 +24,8 @@ public class Ed {
         long end =  System.nanoTime();
         System.out.println("MilliSec => " + (end - start)/1000000.0);
         
-        System.out.println(edFuncDina(s1,s2,s1.length(),s2.length()));
-        
+        System.out.println(edFuncDina(s11,s22,s11.length(),s22.length()));
+       //System.out.println(edFuncDina("casa","pai",4,3));
     }
 
     public static int edFunc(String S, String T, int i, int j){
@@ -47,31 +47,44 @@ public class Ed {
 
 
     public static int edFuncDina(String S, String T,int m, int n){
-        int[][] matriz = new int[m][n];
+        int[][] matriz = new int[m+1][n+1];
 
-        for(int i = 1; i<m;i++){
+        for(int i = 1; i<=m;i++){
             matriz[i][0] = matriz[i-1][0]+1;
         }
 
-        for(int j = 1; j<n;j++){
+        for(int j = 1; j<=n;j++){
             matriz[0][j] = matriz[j-1][0]+1;
         }
         
         int custoEx = 0;
-        for(int i = 1; i<m;i++){
-            for(int j = 1; j<n;j++){
-                if(S.charAt(i)==T.charAt(j)){
+        for(int i = 1; i<=m;i++){
+            for(int j = 1; j<=n;j++){
+                
+                if(S.charAt(i-1)==T.charAt(j-1)){
                     custoEx = 0;
                 }
                 else{
                     custoEx = 1;
                 }
-                
+                //printMatrix(matriz);
                 matriz[i][j] = Integer.min(matriz[i-1][j] +1, Integer.min(matriz[i][j-1] +1,
                 matriz[i-1][j-1] + custoEx));
             }
         }
-        return matriz[m-1][n-1];
+        return matriz[m][n];
+    }
+
+    public static void printMatrix(int[][] matrix){
+        System.out.println("#------------------#");
+        for(int i =0; i < matrix.length; i++){
+            for(int j=0;j< matrix[i].length; j++){
+                System.out.print(matrix[i][j]);
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
+        System.out.println("#------------------#");
     }
     
 }
