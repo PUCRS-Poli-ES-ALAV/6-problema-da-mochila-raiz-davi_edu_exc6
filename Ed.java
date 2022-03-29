@@ -1,5 +1,10 @@
 public class Ed {
     public static void main(String[] args){
+
+        PerfomanceTester pt = PerfomanceTester.getInstance();
+        pt.addTest("Brute force edit distance");
+        pt.addTest("Dynamic Edit distance");
+
         String s1 = "Casablanca";
         String s2 = "Portentoso";
 
@@ -18,17 +23,30 @@ public class Ed {
 			        "Go to the profile of Marin Vlastelica Pogančić" + 
 			        "Marin Vlastelica Pogančić Jun";
 
-        System.out.println("fb1:");
-        long start = System.nanoTime();
-        System.out.println(edFunc(s1,s2,s1.length()-1,s2.length()-1));
-        long end =  System.nanoTime();
-        System.out.println("MilliSec => " + (end - start)/1000000.0);
+        // System.out.println("fb1:");
+        // long start = System.nanoTime();
+        // System.out.println(edFunc(s1,s2,s1.length()-1,s2.length()-1));
+        // long end =  System.nanoTime();
+        // System.out.println("MilliSec => " + (end - start)/1000000.0);
         
-        System.out.println(edFuncDina(s11,s22,s11.length(),s22.length()));
+        pt.start("Brute force edit distance");
+        System.out.println(edFunc(s1,s2,s1.length()-1,s2.length()-1,pt));
+        pt.end();
+
+        System.out.println(pt.getReport("Brute force edit distance"));
+
+        pt.start("Dynamic Edit distance");
+        System.out.println(edFuncDina(s1,s2,s1.length(),s2.length(),pt));
+        pt.end();
+
+        System.out.println(pt.getReport("Dynamic Edit distance"));
+
+       // System.out.println(edFuncDina(s11,s22,s11.length(),s22.length()));
        //System.out.println(edFuncDina("casa","pai",4,3));
     }
 
-    public static int edFunc(String S, String T, int i, int j){
+    public static int edFunc(String S, String T, int i, int j,PerfomanceTester pt){
+        pt.countIter();
         if(i==-1 && j==-1){
             return 0;
         } else if (i==-1){
@@ -38,22 +56,25 @@ public class Ed {
         }
 
         if(S.charAt(i)==T.charAt(j)){
-            return edFunc(S, T, i-1, j-1);
+            return edFunc(S, T, i-1, j-1,pt);
         } else {
-            return Integer.min(edFunc(S, T, i-1, j-1) + 1, Integer.min( edFunc(S, T, i, j-1) + 1,edFunc(S, T, i-1, j) + 1));
+            return Integer.min(edFunc(S, T, i-1, j-1,pt) + 1, Integer.min( edFunc(S, T, i, j-1,pt) + 1,edFunc(S, T, i-1, j,pt) + 1));
         }
 
     }
 
 
-    public static int edFuncDina(String S, String T,int m, int n){
+    public static int edFuncDina(String S, String T,int m, int n, PerfomanceTester pt){
+        pt.countIter();
         int[][] matriz = new int[m+1][n+1];
 
         for(int i = 1; i<=m;i++){
+            pt.countIter();
             matriz[i][0] = matriz[i-1][0]+1;
         }
 
         for(int j = 1; j<=n;j++){
+            pt.countIter();
             matriz[0][j] = matriz[j-1][0]+1;
         }
         
@@ -70,6 +91,7 @@ public class Ed {
                 //printMatrix(matriz);
                 matriz[i][j] = Integer.min(matriz[i-1][j] +1, Integer.min(matriz[i][j-1] +1,
                 matriz[i-1][j-1] + custoEx));
+                pt.countIter();
             }
         }
         return matriz[m][n];
